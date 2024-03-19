@@ -1,0 +1,21 @@
+.notes {
+  grid-column: span 4;
+  @include grid;
+  grid-auto-rows: 250px;
+
+  @include onTablet {
+    grid-column: span 12;
+  }
+
+  @include onDesktop {
+    grid-column: span 24;
+  }
+
+  &__note {
+    grid-column: span 4;
+
+    @include onDesktop {
+      grid-column: span 6;
+    }
+  }
+}

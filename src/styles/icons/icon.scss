@@ -1,0 +1,23 @@
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 20px;
+  width: 20px;
+
+  &--edit {
+    background-image: url('./../../../public/icons/edit.svg');
+    background-size: contain;
+    background-position: center;
+  }
+
+  &--highlight {
+    background-image: url('./../../../public/icons/star.svg');
+    background-size: contain;
+    background-position: center;
+
+    height: 16px;
+    width: 16px;
+  }
+}

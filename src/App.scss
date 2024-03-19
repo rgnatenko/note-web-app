@@ -1,0 +1,21 @@
+@import './styles/utils//vars.scss';
+@import './styles/utils/mixins.scss';
+@import './styles/utils/reset.scss';
+
+@import './styles/icons/icon.scss';
+
+@import './components/FirstScreen/FirstScreen.scss';
+@import './components/CreateForm/CreateForm.scss';
+@import './components/NoteList/NoteList.scss';
+@import './components/NoteItem/NoteItem.scss';
+@import './components/Loader/Loader.scss';
+
+.App {
+  @include grid;
+  @include paddingInline;
+  @include paddingBlock;
+
+  height: 100%;
+
+  background-color: $c-background;
+}

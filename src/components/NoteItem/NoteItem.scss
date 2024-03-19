@@ -1,0 +1,63 @@
+.note {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 25px 20px;
+  max-height: 250px;
+
+  border-radius: 16px;
+
+  @include hover(transform, scale(1.03));
+
+  &--purple {
+    background-color: $c-purple;
+  }
+
+  &--yellow {
+    background-color: $c-yellow;
+  }
+
+  &--red {
+    background-color: $c-red;
+  }
+
+  &--blue {
+    background-color: $c-blue;
+  }
+
+  &--orange {
+    background-color: $c-orange;
+  }
+
+  &__top {
+    @include flex-spb;
+    align-items: flex-start;
+  }
+
+  &__highlight {
+    @include icon-circle;
+    padding: 8px;
+
+    cursor: pointer;
+  }
+
+  &__footer {
+    @include flex-spb;
+  }
+
+  &__text {
+    @include bodyText($c-black);
+    max-width: 80%;
+  }
+
+  &__date {
+    @include secondaryText;
+  }
+
+  &__edit {
+    @include icon-circle;
+
+    cursor: pointer;
+  }
+}

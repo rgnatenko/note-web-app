@@ -1,0 +1,135 @@
+@import './vars.scss';
+
+@mixin onTablet {
+  @media (min-width: $tablet-min-width) {
+    @content;
+  }
+}
+
+@mixin onDesktop {
+  @media (min-width: $desktop-min-width) {
+    @content;
+  }
+}
+
+@mixin paddingInline {
+  padding-inline: 16px;
+
+  @include onTablet {
+    padding-inline: 24px;
+  }
+
+  @include onDesktop {
+    padding-inline: 32px;
+  }
+}
+
+@mixin paddingBlock {
+  padding-block: 24px;
+}
+
+@mixin grid {
+  --columns: 4;
+  display: grid;
+  justify-content: center;
+  column-gap: 16px;
+  row-gap: 30px;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  // grid-template-rows: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-auto-rows: 250px;
+
+  @include paddingInline;
+
+  @include onTablet {
+    --columns: 12;
+  }
+
+  @include onDesktop {
+    --columns: 24;
+
+    grid-template-columns: repeat(var(--columns), 32px);
+  }
+}
+
+@mixin hover($property, $toVAlue) {
+  transition-property: #{$property};
+  transition-duration: $effect-duration;
+
+  &:hover {
+    #{$property}: #{$toVAlue};
+  }
+}
+
+@mixin bodyText($color) {
+  font-size: 16px;
+  font-weight: 400;
+  color: #{$color};
+  line-height: 140%;
+}
+
+@mixin secondaryText {
+  @include bodyText($c-black);
+  font-size: 12px;
+  line-height: 100%;
+}
+
+@mixin button-primary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 12px 56px;
+  background-color: $c-button-blue;
+  border-radius: 30px;
+
+  @include bodyText($c-white);
+  font-weight: 500;
+  line-height: 100%;
+}
+
+@mixin button-radio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 48px;
+  border: 1px solid $c-light-grey;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 26px;
+    width: 26px;
+
+    border-radius: 48px;
+  }
+
+  cursor: pointer;
+
+  @include hover(border-color, $c-grey);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-spb {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin icon-circle {
+  @include flex-center;
+
+  padding: 10px;
+  background-color: $c-black;
+  border-radius: 20px;
+
+  @include hover(background-color, #28282E);
+}

@@ -1,0 +1,92 @@
+.create-form {
+  grid-column: span 4;
+  height: 100%;
+  padding: 44px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background-color: $c-white;
+  border-radius: 20px;
+
+  @include onTablet {
+    grid-column: span 12;
+  }
+
+  @include onDesktop {
+    grid-column: span 24;
+  }
+
+  &__text-field {
+    height: 80%;
+
+    &::placeholder {
+      color: $c-light-grey;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__color-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @include bodyText($c-grey);
+  }
+
+  &__colors {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__color {
+    @include button-radio;
+
+    &--purple {
+      &::after {
+        background-color: $c-purple;
+      }
+    }
+
+    &--yellow {
+      &::after {
+        background-color: $c-yellow;
+      }
+    }
+
+    &--red {
+      &::after {
+        background-color: $c-red;
+      }
+    }
+
+    &--blue {
+      &::after {
+        background-color: $c-blue;
+      }
+    }
+
+    &--orange {
+      &::after {
+        background-color: $c-orange;
+      }
+    }
+
+    &--active {
+      border-color: $c-black;
+    }
+  }
+
+  &__btn {
+    @include button-primary;
+    width: fit-content;
+
+    @include hover(background-color, #2C0F92);
+  }
+}
