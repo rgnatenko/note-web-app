@@ -10,6 +10,17 @@
 
   @include hover(transform, scale(1.03));
 
+  &--add {
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    @include bodyText($c-button-blue);
+    text-align: center;
+
+    border: 1px solid $c-button-blue;
+  }
+
   &--purple {
     background-color: $c-purple;
   }
@@ -59,5 +70,13 @@
     @include icon-circle;
 
     cursor: pointer;
+  }
+
+  &__add-btn {
+    @include icon-circle;
+    background-color: transparent;
+    border: 1px solid $c-button-blue;
+
+    @include hover(background-color, #E3DBFF);
   }
 }

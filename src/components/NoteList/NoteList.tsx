@@ -1,6 +1,7 @@
 import React from 'react';
 import { NoteItem } from '../NoteItem';
 import { NoteWithColor } from '../../types/NoteWithColor';
+import { CreateButton } from '../CreateButton';
 
 type Props = {
   notes: NoteWithColor[]
@@ -16,6 +17,11 @@ export const NoteList: React.FC<Props> = ({ notes }) => {
           colorName={note.colorName}
         />
       )}
+
+      <div className="notes__note note note--add">
+        Add note
+        <CreateButton btnClass="note__add-btn" />
+      </div>
     </div>
   );
 };
