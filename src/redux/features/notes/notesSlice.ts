@@ -7,7 +7,7 @@ import { UUID } from 'crypto';
 const initialState: NoteState = {
   data: [],
   notesAreLoading: false,
-  error: ''
+  error: '',
 };
 
 export const initNotes = createAsyncThunk('notes/get', () => {

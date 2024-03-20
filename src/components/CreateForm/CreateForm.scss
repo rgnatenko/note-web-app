@@ -18,6 +18,15 @@
     grid-column: span 24;
   }
 
+  &__header {
+    margin-bottom: 16px;
+    @include bodyText($c-button-blue);
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   &__text-field {
     height: 80%;
 

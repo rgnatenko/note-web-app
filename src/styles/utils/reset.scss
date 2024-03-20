@@ -30,6 +30,10 @@ p {
 
 a {
   text-decoration: none;
+
+  &:visited {
+    color: $c-button-blue;
+  }
 }
 
 input {
