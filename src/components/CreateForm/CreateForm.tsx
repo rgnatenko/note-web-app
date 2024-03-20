@@ -38,22 +38,23 @@ export const CreateForm: React.FC = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (noteToUpdate && selectedColorId) {
-      if (!text) {
-        dispatch(deleteExistingNote(noteId as UUID));
+    if (selectedColorId !== null) {
+      if (noteToUpdate) {
+        if (!text) {
+          dispatch(deleteExistingNote(noteId as UUID));
+
+          return;
+        }
+
+        dispatch(updateSelectedNote({
+          ...noteToUpdate,
+          text,
+          colorId: selectedColorId,
+        }));
+
         return;
       }
 
-      dispatch(updateSelectedNote({
-        ...noteToUpdate,
-        text,
-        colorId: selectedColorId,
-      }));
-
-      return;
-    }
-
-    if (selectedColorId !== null) {
       if (!text) {
         return;
       }
