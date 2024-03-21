@@ -1,111 +1,107 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createNote, deleteNote, getNotes, updateNote } from '../../../api/notes';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NoteState } from '../../../types/NoteState';
 import { Note } from '../../../types/Note';
-import { UUID } from 'crypto';
+import { Filter } from '../../../types/Filter';
+import parseDataFromStorage from '../../../helpers/parseDataFromStorage';
+import { createNoteDate } from '../../../helpers/createNoteDate';
+import { generateNoteId } from '../../../helpers/generateNoteId';
 
 const initialState: NoteState = {
-  data: [],
-  notesAreLoading: false,
-  error: '',
+  notes: parseDataFromStorage<Note[], []>('notes', []),
+  loading: false,
+  filters: parseDataFromStorage<Filter[], []>('filters', []),
+  query: parseDataFromStorage<string, string>('query', ''),
+  isHighlighted: parseDataFromStorage<boolean, boolean>('isHighlighted', false),
 };
-
-export const initNotes = createAsyncThunk('notes/get', () => {
-  return getNotes();
-});
-
-export const createNewNote = createAsyncThunk('notes/create',
-  ({ text, colorId, highlighted }: Omit<Note, 'id' | 'date'>) => {
-    return createNote({ text, colorId, highlighted });
-  });
-
-export const updateSelectedNote = createAsyncThunk('notes/update',
-  ({ id, text, colorId, highlighted }: Omit<Note, 'date'>) => {
-    return updateNote({ id, text, colorId, highlighted });
-  });
-
-export const deleteExistingNote = createAsyncThunk('notes/delete', (id: UUID) => {
-  return deleteNote(id);
-});
 
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
-  reducers: {},
+  reducers: {
+    addFilter: (state, action: PayloadAction<Filter>) => {
+      const filter = action.payload;
 
-  extraReducers: (buider) => {
-    const setLoadingAndError = (
-      state: NoteState,
-      stateLoading: boolean,
-      stateError: string
+      state.filters.push(filter);
+      localStorage.setItem('filters', JSON.stringify(state.filters));
+    },
+
+    removeFilter: (state, action: PayloadAction<Filter>) => {
+      const filterToDelete = action.payload;
+
+      state.filters = state.filters
+        .filter(filter => filter !== filterToDelete);
+      localStorage.setItem('filters', JSON.stringify(state.filters));
+    },
+
+    clearFilters: state => {
+      state.filters = [];
+      localStorage.setItem('filters', JSON.stringify(state.filters));
+    },
+
+    setQuery: (state, action: PayloadAction<string>) => {
+      state.query = action.payload;
+
+      localStorage.setItem('query', JSON.stringify(state.query));
+    },
+
+    setIsHighlighted: (state, action: PayloadAction<boolean>) => {
+      state.isHighlighted = action.payload;
+
+      localStorage.setItem('isHighlighted', JSON.stringify(state.isHighlighted));
+    },
+
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+
+    createNote: (
+      state,
+      action: PayloadAction<Omit<
+        Note, 'id' | 'date' | 'highlighted'
+      >>
     ) => {
-      state.notesAreLoading = stateLoading;
-      state.error = stateError;
-    };
+      const newNote: Note = {
+        ...action.payload,
+        id: generateNoteId(),
+        date: createNoteDate(new Date()),
+        highlighted: false
+      };
 
-    buider.addCase(initNotes.pending, state => {
-      setLoadingAndError(state, true, '');
-    });
+      state.notes.push(newNote);
+      localStorage.setItem('notes', JSON.stringify(state.notes));
+    },
 
-    buider.addCase(initNotes.fulfilled, (state, action) => {
-      setLoadingAndError(state, false, '');
+    updateNote: (state, action: PayloadAction<Note>) => {
+      const noteToUpdate = action.payload;
+      noteToUpdate.date = createNoteDate(new Date());
 
-      state.data = action.payload;
-    });
-
-    buider.addCase(initNotes.rejected, state => {
-      const error = 'Error happened while loading notes, please try again';
-      setLoadingAndError(state, false, error);
-    });
-
-    buider.addCase(createNewNote.pending, state => {
-      setLoadingAndError(state, true, '');
-    });
-
-    buider.addCase(createNewNote.fulfilled, (state, action) => {
-      setLoadingAndError(state, false, '');
-
-      const newNote = action.payload;
-      state.data.push(newNote);
-    });
-
-    buider.addCase(createNewNote.rejected, state => {
-      const error = 'Error happened while creating note, please try again';
-      setLoadingAndError(state, false, error);
-    });
-
-    buider.addCase(updateSelectedNote.pending, state => {
-      setLoadingAndError(state, true, '');
-    });
-
-    buider.addCase(updateSelectedNote.fulfilled, (state, action) => {
-      setLoadingAndError(state, false, '');
-
-      const noteToSet = action.payload;
-      state.data = state.data
-        .map(note => note.id === noteToSet.id
-          ? noteToSet
+      state.notes = state.notes
+        .map(note => note.id === noteToUpdate.id
+          ? noteToUpdate
           : note);
-    });
 
-    buider.addCase(updateSelectedNote.rejected, state => {
-      const error = 'Error happened while updating note, please try again';
-      setLoadingAndError(state, false, error);
-    });
+      localStorage.setItem('notes', JSON.stringify(state.notes));
+    },
 
-    buider.addCase(deleteExistingNote.pending, state => {
-      setLoadingAndError(state, true, '');
-    });
+    deleteNote: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
 
-    buider.addCase(deleteExistingNote.fulfilled, state => {
-      setLoadingAndError(state, false, '');
-    });
-
-    buider.addCase(deleteExistingNote.rejected, state => {
-      const error = 'Error happened while updating note, please try again';
-      setLoadingAndError(state, false, error);
-    });
-  }
+      state.notes = state.notes.filter(note => note.id !== id);
+      localStorage.setItem('notes', JSON.stringify(state.notes));
+    },
+  },
 });
+
+export const {
+  addFilter,
+  removeFilter,
+  clearFilters,
+  setIsHighlighted,
+  setQuery,
+  setLoading,
+  createNote,
+  updateNote,
+  deleteNote,
+} = notesSlice.actions;
 
 export const notesReducer = notesSlice.reducer;

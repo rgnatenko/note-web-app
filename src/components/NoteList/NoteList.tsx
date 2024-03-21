@@ -1,7 +1,7 @@
 import React from 'react';
 import { NoteItem } from '../NoteItem';
 import { NoteWithColor } from '../../types/NoteWithColor';
-import { CreateButton } from '../CreateButton';
+import { CreateButton } from '../../ui/CreateButton';
 
 type Props = {
   notes: NoteWithColor[]

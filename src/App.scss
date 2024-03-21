@@ -9,13 +9,27 @@
 @import './components/NoteList/NoteList.scss';
 @import './components/NoteItem/NoteItem.scss';
 @import './components/Loader/Loader.scss';
+@import './components/Header/Header.scss';
 
 .App {
-  @include grid;
+  display: flex;
+  flex-direction: column;
+
   @include paddingInline;
   @include paddingBlock;
 
   height: 100%;
 
   background-color: $c-background;
+
+  &__loading {
+    grid-column: 1/-1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25%;
+    @include bodyText($c-black);
+    text-align-last: center;
+  }
 }

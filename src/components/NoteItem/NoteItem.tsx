@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { Note } from '../../types/Note';
-import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/hooks';
-import { updateSelectedNote } from '../../redux/features/notes';
 import classNames from 'classnames';
+import { updateNote } from '../../redux/features/notes/notesSlice';
+import { ButtonWithIcon } from '../../ui/ButtonWithIcon';
 
 type Props = { note: Note, colorName: string };
 
@@ -16,15 +16,8 @@ export const NoteItem: React.FC<Props> = ({ note, colorName }) => {
 
   const dispatch = useAppDispatch();
 
-  const [isHighlighted, setIsHighlighted] = useState(false);
-
-  useEffect(() => {
-    setIsHighlighted(note.highlighted);
-  }, []);
-
   const higlightNote = () => {
-    dispatch(updateSelectedNote({ ...note, highlighted: !isHighlighted }));
-    setIsHighlighted(!isHighlighted);
+    dispatch(updateNote({ ...note, highlighted: !note.highlighted }));
   };
 
   return (
@@ -33,10 +26,10 @@ export const NoteItem: React.FC<Props> = ({ note, colorName }) => {
         <p className="note__text">{normalizedText}</p>
 
         <div className="note__highlight">
-          <button
-            className={classNames('icon', {
-              'icon--not-highlighted': !isHighlighted,
-              'icon--highlighted': isHighlighted,
+          <ButtonWithIcon
+            btnClass={classNames('icon', {
+              'icon--not-highlighted': !note.highlighted,
+              'icon--highlighted': note.highlighted,
             })}
             onClick={higlightNote}
           />
@@ -47,9 +40,9 @@ export const NoteItem: React.FC<Props> = ({ note, colorName }) => {
         <p className="note__date">{note.date}</p>
 
         <div className="note__edit">
-          <Link
-            to={`/update/${note.id}`}
-            className="icon icon--edit"
+          <ButtonWithIcon
+            link={`/update/${note.id}`}
+            btnClass="icon icon--edit"
           />
         </div>
       </div>

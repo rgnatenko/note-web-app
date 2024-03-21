@@ -1,18 +1,17 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { } from '../../../types/NoteState';
-import { getColors } from '../../../api/colors';
 import { ColorState } from '../../../types/ColorState';
 
 const initialState: ColorState = {
-  data: [],
-  colorsAreLoading: false,
-  error: '',
-  selectedColorId: null
+  colors: [
+    { id: 0,name: 'purple',hash: '#B488F8' },
+    { id: 1, name: 'yellow', hash: '#E5F699' },
+    { id: 2, name: 'red', hash: '#F5957A' },
+    { id: 3, name: 'blue', hash: '#26E6FA' },
+    { id: 4, name: 'orange', hash: '#F9CA7C' }
+  ],
+  selectedColorId: 0
 };
-
-export const initColors = createAsyncThunk('colors/get', () => {
-  return getColors();
-});
 
 export const colorsSlice = createSlice({
   name: 'colors',
@@ -24,25 +23,6 @@ export const colorsSlice = createSlice({
       state.selectedColorId = colorId;
     },
   },
-
-  extraReducers: (buider) => {
-    buider.addCase(initColors.pending, state => {
-      state.colorsAreLoading = true;
-      state.error = '';
-    });
-
-    buider.addCase(initColors.fulfilled, (state, action) => {
-      state.colorsAreLoading = false;
-      state.error = '';
-
-      state.data = action.payload;
-    });
-
-    buider.addCase(initColors.rejected, state => {
-      state.colorsAreLoading = false;
-      state.error = 'Error happened while loading colors, please try again';
-    });
-  }
 });
 
 export const { selectColor } = colorsSlice.actions;

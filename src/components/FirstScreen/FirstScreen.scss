@@ -5,6 +5,7 @@
   gap: 24px;
   align-items: center;
   justify-content: center;
+  height: 100%;
 
   @include onTablet {
     grid-column: span 12;
@@ -27,7 +28,7 @@
 
     border: 1px solid $c-button-blue;
     border-radius: 40px;
-
     @include hover(background-color, #E3DBFF);
+
   }
 }

@@ -2,6 +2,7 @@
   grid-column: span 4;
   @include grid;
   grid-auto-rows: 250px;
+  align-content: start;
 
   @include onTablet {
     grid-column: span 12;

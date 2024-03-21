@@ -1,24 +1,22 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 //#region IMPORTS
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../redux/hooks';
-import { initColors, selectColor } from '../../redux/features/colors';
+import { selectColor } from '../../redux/features/colors';
 import { useColors, useNotes } from '../../redux/selectors';
 import cn from 'classnames';
-import { createNewNote, deleteExistingNote, updateSelectedNote } from '../../redux/features/notes';
-import { Link, useParams } from 'react-router-dom';
-import { getNote } from '../../api/notes';
-import { UUID } from 'crypto';
+import { useParams } from 'react-router-dom';
 import { Loader } from '../Loader';
 import { Note } from '../../types/Note';
+import { createNote, deleteNote, setLoading, updateNote } from '../../redux/features/notes';
+import { ButtonWithIcon } from '../../ui/ButtonWithIcon';
+import { Input } from '../../ui/Input';
 //#endregion
 
 export const CreateForm: React.FC = () => {
   const dispatch = useAppDispatch();
-
-  const colors = useColors().data;
-  const { error, colorsAreLoading, selectedColorId } = useColors();
-
-  const { notesAreLoading } = useNotes();
+  const { selectedColorId, colors } = useColors();
+  const { notes, loading } = useNotes();
 
   const [text, setText] = useState('');
   const [noteToUpdate, setNoteToUpdate] = useState<Note | null>(null);
@@ -27,52 +25,51 @@ export const CreateForm: React.FC = () => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
-    dispatch(initColors());
-
     if (noteId) {
-      getNote(noteId as UUID)
-        .then(note => {
-          setNoteToUpdate(note);
-          setText(note.text);
-          dispatch(selectColor(note.colorId));
-        });
+      const note = notes.find(note => note.id === noteId) as Note;
 
-      return;
+      setNoteToUpdate(note);
+      setText(note.text);
+      dispatch(selectColor(note.colorId));
     }
-
-    dispatch(selectColor(0));
   }, []);
 
+  const setOffLoading = () => setTimeout(() => {
+    dispatch(setLoading(false));
+  }, 500);
+
   const handleSubmit = () => {
-    if (selectedColorId !== null) {
-      if (noteToUpdate) {
-        if (!text) {
-          dispatch(deleteExistingNote(noteId as UUID));
+    const noteDidntChange = text === noteToUpdate?.text
+      && noteToUpdate.colorId === selectedColorId;
+    if (noteDidntChange) return;
 
-          return;
-        }
+    dispatch(setLoading(true));
 
-        dispatch(updateSelectedNote({
-          ...noteToUpdate,
-          text,
-          colorId: selectedColorId,
-        }));
+    if (!text) {
+      if (noteToUpdate) dispatch(deleteNote(noteId as string));
 
-        return;
-      }
+      setOffLoading();
+      return;
+    }
 
-      if (!text) {
-        return;
-      }
-
-      dispatch(createNewNote({
+    if (noteToUpdate) {
+      dispatch(updateNote({
+        ...noteToUpdate,
         text,
         colorId: selectedColorId,
-        highlighted: false,
       }));
+
+      setOffLoading();
 
       return;
     }
+
+    dispatch(createNote({
+      text,
+      colorId: selectedColorId
+    }));
+
+    setOffLoading();
   };
 
   const handleCopy = () => {
@@ -83,67 +80,62 @@ export const CreateForm: React.FC = () => {
   };
 
   return (
-    <>
-      {colorsAreLoading && <Loader />}
+    <div className="create-form">
+      <div className="create-form__header">
+        <ButtonWithIcon
+          link="/"
+          title="back to main page"
+          btnClass="icon icon--back"
+          onClick={handleSubmit}
+        />
 
-      {!error && !colorsAreLoading && (
-        <div className="create-form">
-          <div className="create-form__header">
-            <Link
-              to="/"
-              title="back to main page"
-              className="icon icon--back"
-            />
+        <ButtonWithIcon
+          title="copy text"
+          onClick={handleCopy}
+          btnClass="icon icon--copy"
+        />
 
-            <button
-              title="copy text"
-              onClick={handleCopy}
-              className="icon icon--copy"
-            />
+        <ButtonWithIcon
+          title="clear text"
+          onClick={() => setText('')}
+          btnClass="icon icon--clear"
+        />
+      </div>
 
-            <button
-              title="clear text"
-              onClick={() => setText('')}
-              className="icon icon--clear"
-            />
-          </div>
+      <textarea
+        ref={inputRef}
+        placeholder="Write smth..."
+        className="create-form__text-field"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
 
-          <textarea
-            ref={inputRef}
-            placeholder="Write smth..."
-            className="create-form__text-field"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
+      <div className="create-form__footer">
+        <div className="create-form__color-section">
+          Choose color
 
-          <div className="create-form__footer">
-            <div className="create-form__color-section">
-              Choose color
-
-              <div className="create-form__colors">
-                {colors.map(color => (
-                  <input
-                    type="radio"
-                    key={color.id}
-                    className={cn(`create-form__color
+          <div className="create-form__colors">
+            {colors.map(color => (
+              <Input
+                type="radio"
+                key={color.id}
+                inputClass={cn(`create-form__color
                       create-form__color--${color.name}`, {
-                      'create-form__color--active': selectedColorId === color.id
-                    })}
-                    onClick={() => dispatch(selectColor(color.id))}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <button
-              className="create-form__btn"
-              onClick={handleSubmit}
-            >
-              {notesAreLoading ? <Loader /> : 'Save'}
-            </button>
+                  'create-form__color--active': selectedColorId === color.id
+                })}
+                onClick={() => dispatch(selectColor(color.id))}
+              />
+            ))}
           </div>
         </div>
-      )}
-    </>
+
+        <button
+          className="create-form__btn"
+          onClick={handleSubmit}
+        >
+          {loading ? <Loader /> : 'Save'}
+        </button>
+      </div>
+    </div>
   );
 };

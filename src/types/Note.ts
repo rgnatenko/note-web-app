@@ -1,7 +1,5 @@
-import { UUID } from 'crypto';
-
 export interface Note {
-  id: UUID,
+  id: string,
   text: string,
   date: string,
   colorId: number,

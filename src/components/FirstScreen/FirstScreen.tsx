@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreateButton } from '../CreateButton';
+import { CreateButton } from '../../ui/CreateButton';
 
 export const FirstScreen: React.FC = () => {
   return (
