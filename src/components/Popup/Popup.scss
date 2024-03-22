@@ -1,0 +1,81 @@
+.popup-overlay {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+
+
+  width: 288px;
+  height: 288px;
+
+  background: $c-background;
+  border-radius: 8px;
+  box-shadow: 0 0 10px $c-button-blue;
+
+  @include onTablet {
+    width: 368px;
+    height: 368px;
+
+    padding: 60px;
+  }
+
+  &__text-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  &__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+
+    @include onTablet {
+      top: 24px;
+      right: 24px;
+    }
+  }
+
+  &__img {
+    display: block;
+    width: 165px;
+    height: 102px;
+
+    @include onTablet {
+      width: 255px;
+      height: 157px;
+    }
+  }
+
+  &__btn {
+    width: 100%;
+    @include button-primary;
+    padding: 12px 0;
+
+    @include bodyText($c-white);
+
+    @include hover(background-color, #2C0F92);
+
+    &:visited {
+      color: $c-white;
+    }
+  }
+}

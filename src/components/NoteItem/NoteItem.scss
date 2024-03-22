@@ -60,6 +60,7 @@
   &__text {
     @include bodyText($c-black);
     max-width: 80%;
+    white-space: pre-wrap;
   }
 
   &__date {

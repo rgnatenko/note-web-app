@@ -11,6 +11,7 @@ import { Note } from '../../types/Note';
 import { createNote, deleteNote, setLoading, updateNote } from '../../redux/features/notes';
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon';
 import { Input } from '../../ui/Input';
+import { Popup } from '../Popup';
 //#endregion
 
 export const CreateForm: React.FC = () => {
@@ -19,6 +20,7 @@ export const CreateForm: React.FC = () => {
   const { notes, loading } = useNotes();
 
   const [text, setText] = useState('');
+  const [succesfullMessage, setSuccesfullMessage] = useState('');
   const [noteToUpdate, setNoteToUpdate] = useState<Note | null>(null);
   const { noteId } = useParams();
 
@@ -34,9 +36,14 @@ export const CreateForm: React.FC = () => {
     }
   }, []);
 
-  const setOffLoading = () => setTimeout(() => {
-    dispatch(setLoading(false));
-  }, 500);
+  const handleResult = (message: string) => {
+    setTimeout(() => {
+      dispatch(setLoading(false));
+      setSuccesfullMessage(message);
+    }, 500);
+
+    setTimeout(() => setSuccesfullMessage(''), 5000);
+  };
 
   const handleSubmit = () => {
     const noteDidntChange = text === noteToUpdate?.text
@@ -48,7 +55,8 @@ export const CreateForm: React.FC = () => {
     if (!text) {
       if (noteToUpdate) dispatch(deleteNote(noteId as string));
 
-      setOffLoading();
+      handleResult('Your note has been deleted');
+
       return;
     }
 
@@ -59,7 +67,7 @@ export const CreateForm: React.FC = () => {
         colorId: selectedColorId,
       }));
 
-      setOffLoading();
+      handleResult('Your note has been updated');
 
       return;
     }
@@ -69,7 +77,7 @@ export const CreateForm: React.FC = () => {
       colorId: selectedColorId
     }));
 
-    setOffLoading();
+    handleResult('Your note has been created');
   };
 
   const handleCopy = () => {
@@ -109,6 +117,13 @@ export const CreateForm: React.FC = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
+
+      {succesfullMessage &&
+        <Popup
+          succesfullMessage={succesfullMessage}
+          onClose={() => setSuccesfullMessage('')}
+        />
+      }
 
       <div className="create-form__footer">
         <div className="create-form__color-section">

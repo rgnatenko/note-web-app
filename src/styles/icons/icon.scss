@@ -42,4 +42,14 @@
   &--clear {
     background-image: url('./../../../public/icons/clear.svg');
   }
+
+  &--close {
+    background-image: url('./../../../public/icons/close.svg');
+  }
+
+  &--check {
+    background-image: url('./../../../public/icons/check.svg');
+    width: 64px;
+    height: 64px;
+  }
 }
