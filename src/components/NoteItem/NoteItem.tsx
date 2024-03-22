@@ -5,14 +5,12 @@ import { useAppDispatch } from '../../redux/hooks';
 import classNames from 'classnames';
 import { updateNote } from '../../redux/features/notes/notesSlice';
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon';
+import { normalizeNoteText } from '../../helpers/normalizeNoteText';
 
 type Props = { note: Note, colorName: string };
 
 export const NoteItem: React.FC<Props> = ({ note, colorName }) => {
   const { text } = note;
-  const normalizedText = text.split(' ').length > 15
-    ? text.split(' ').slice(0, 16).join(' ') + '...'
-    : text;
 
   const dispatch = useAppDispatch();
 
@@ -23,7 +21,7 @@ export const NoteItem: React.FC<Props> = ({ note, colorName }) => {
   return (
     <div className={cn(`notes__note note note--${colorName}`)}>
       <div className="note__top">
-        <p className="note__text">{normalizedText}</p>
+        <p className="note__text">{normalizeNoteText(text)}</p>
 
         <div className="note__highlight">
           <ButtonWithIcon
